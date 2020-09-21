@@ -7,8 +7,9 @@
   "bin": "./bin/jamyth-script.js",
   "license": "MIT",
   "dependencies": {
+    "child-process-promise": "^2.2.1",
     "colors": "^1.4.0",
     "commander": "^6.1.0",
-    "yarn-programmatic": "^0.1.2"
+    "react": "^16.13.1"
   }
 }

@@ -1,5 +1,0 @@
-https://www.youtube.com/watch?v=-6OAHsde15E&t=192s
-https://levelup.gitconnected.com/react-typescript-with-webpack-part-2-aa02d150c59b
-https://levelup.gitconnected.com/react-typescript-with-webpack-2fceebb8faf
-https://www.tutorialkart.com/nodejs/create-file-in-nodejs-using-node-fs-module/
-https://github.com/tj/commander.js/#options
