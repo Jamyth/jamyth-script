@@ -96,6 +96,8 @@ yarn start
 - react-router
 - redux
 - ~~path alias~~ -> v1.2.23
+- ~~React.memo~~ -> v1.2.23
+- Code Splitting
 - non-typescript
 - and more ...
 
