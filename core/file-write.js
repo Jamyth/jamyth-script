@@ -13,6 +13,12 @@ module.exports = {
   },
   resolve: {
     extensions: [".ts", ".tsx", ".js"],
+    alias: {
+      module: path.resolve(__dirname, 'src/module'),
+      component: path.resolve(__dirname, 'src/component'),
+      asset: path.resolve(__dirname, 'src/asset'),
+      util: path.resolve(__dirname, 'src/util'),
+    }
   },
   module: {
     rules: [
@@ -28,17 +34,33 @@ module.exports = {
       {
         test: /\.scss$/,
         use: ["style-loader", "css-loader", "sass-loader"],
+        sideEffects: true
       },
       {
         test: /\.(png|jpg|jepg|gif|svg|woff|swoff2)$/,
-        loader: "url-loader?limit=10000",
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 1024,
+              esModule: false,
+              fallback: {
+                loader: 'file-loader',
+                options: {
+                  name: 'static/img/[name].[hash:8].[ext]',
+                  esModule: false
+                }
+              }
+            }
+          }
+        ]
       },
     ],
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
-      template: "./index.html",
+      template: "./static/index.html",
     }),
   ],
   devtool: "source-map",
@@ -60,19 +82,19 @@ const INDEX_HTML = `
 `;
 
 const INDEX_TSX = `
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import "./index.scss";
-import { App } from "./App";
+import React from "react";
+import ReactDOM from "react-dom";
+import { Main } from "module/main";
 
 const ROOT = document.getElementById("_jamyth_");
 
-ReactDOM.render(<App />, ROOT);
+ReactDOM.render(<Main />, ROOT);
 
 `;
 
 const TSCONFIG = `{
     "compilerOptions": {
+      "esModuleInterop": true,
       "allowSyntheticDefaultImports": true,
       "jsx": "react",
       "module": "commonjs",
@@ -81,7 +103,14 @@ const TSCONFIG = `{
       "preserveConstEnums": true,
       "removeComments": true,
       "sourceMap": true,
-      "target": "es5"
+      "target": "es5",
+      "baseUrl": "./src",
+      "paths": {
+        "module/*": ["module/*"],
+        "component/*": ["component/*"],
+        "asset/*": ["asset/*"],
+        "util/*": ["util/*"]
+      }
     },
     "include": ["./src/**/*"]
   }
@@ -106,26 +135,31 @@ body {
 }
 `;
 
+const INDEX_APP_TS = `
+export { App as Main } from './component/Main';
+`;
 const APP_TSX = `
-import * as React from 'react';
+import React from 'react';
+import "./index.scss";
 
-export const App = () => {
+export const App = React.memo(() => {
   return (
     <div>
       <h1>Hello Jamyth!</h1>
     </div>
   );
-};
+});
 `;
 
 const writeFile = (project_name) => {
   const PACKAGE_JSON_PATH = `${project_name}/package.json`;
   const WEBPACK_CONFIG_PATH = `${project_name}/webpack.config.js`;
-  const INDEX_HTML_PATH = `${project_name}/index.html`;
+  const INDEX_HTML_PATH = `${project_name}/static/index.html`;
   const TSCONFIG_PATH = `${project_name}/tsconfig.json`;
   const INDEX_TSX_PATH = `${project_name}/src/index.tsx`;
-  const APP_TSX_PATH = `${project_name}/src/App.tsx`;
-  const INDEX_SCSS_PATH = `${project_name}/src/index.scss`;
+  const APP_TSX_PATH = `${project_name}/src/module/main/component/Main.tsx`;
+  const INDEX_APP_TS_PATH = `${project_name}/src/module/main/index.ts`;
+  const INDEX_SCSS_PATH = `${project_name}/src/module/main/component/index.scss`;
 
   const PACKAGE_JSON = `
 {
@@ -147,6 +181,7 @@ const writeFile = (project_name) => {
     TSCONFIG_PATH,
     INDEX_TSX_PATH,
     APP_TSX_PATH,
+    INDEX_APP_TS_PATH,
     INDEX_SCSS_PATH,
   ];
 
@@ -157,6 +192,7 @@ const writeFile = (project_name) => {
     TSCONFIG,
     INDEX_TSX,
     APP_TSX,
+    INDEX_APP_TS,
     INDEX_SCSS,
   ];
 

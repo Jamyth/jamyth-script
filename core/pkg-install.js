@@ -1,4 +1,4 @@
-const { exec, spawn } = require("child-process-promise");
+const { exec } = require("child-process-promise");
 
 const dependencies = ["react", "react-dom"];
 
@@ -14,9 +14,10 @@ const devDependencies = [
   "style-loader",
   "typescript",
   "url-loader",
-  "webpack",
-  "webpack-dev-server",
-  "webpack-cli",
+  "file-loader",
+  "webpack@4.44.2",
+  "webpack-dev-server@3.11.0",
+  "webpack-cli@3.3.12",
 ];
 
 const install = async (project_name) => {
