@@ -86,7 +86,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { async } from 'util/async';
 
-const Main = async(() => import("module/main'), "Main")
+const Main = async(() => import("module/main"), "Main");
 
 const ROOT = document.getElementById("_jamyth_");
 
