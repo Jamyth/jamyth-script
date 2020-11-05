@@ -32,7 +32,16 @@ class Module {
     if (fs.existsSync(`${src}/module/${name.replace(/_/g, "-")}`)) {
       throw new Error("module is exist");
     }
-    generate(`${src}/module/${name.replace(/_/g, "-")}`);
+
+    const splitted = name.split("/");
+    if (splitted.length > 1) {
+      splitted.reduce((prev, curr) => {
+        const path = `${prev}/${curr}`;
+        generate(`${src}/module/${path}`);
+        return path;
+      }, "");
+    }
+    // generate(`${src}/module/${name.replace(/_/g, "-")}`);
     generate(`${src}/module/${name.replace(/_/g, "-")}/component`);
 
     if (option.asset) {
