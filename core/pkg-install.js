@@ -5,7 +5,7 @@ const dependencies = ["react", "react-dom"];
 const devDependencies = [
   "@types/react",
   "@types/react-dom",
-  "awesome-typescript-loader",
+  "ts-loader",
   "css-loader",
   "html-webpack-plugin",
   "node-sass",
