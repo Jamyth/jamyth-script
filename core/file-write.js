@@ -84,7 +84,9 @@ const INDEX_HTML = `
 const INDEX_TSX = `
 import React from "react";
 import ReactDOM from "react-dom";
-import { Main } from "module/main";
+import { async } from 'util/async';
+
+const Main = async(() => import("module/main'), "Main")
 
 const ROOT = document.getElementById("_jamyth_");
 
@@ -151,6 +153,41 @@ export const App = React.memo(() => {
 });
 `;
 
+const CODE_SPLIT_UTIL = `import React from "react";
+
+type ReactComponentTypeOf<T> = {
+  [P in keyof T]: T[P] extends React.ComponentType<any> ? P : never;
+}[keyof T];
+
+export const async = <T, K extends ReactComponentTypeOf<T>>(
+  resolve: () => Promise<T>,
+  key: K,
+  loadingComponent: React.ReactElement | null = null
+): T[K] => {
+  return React.memo((props: any) => {
+    const [Component, setComponent] = React.useState<React.ComponentType<
+      any
+    > | null>(null);
+
+    const load = async () => {
+      try {
+        const module = await resolve();
+        setComponent(() => module[key]);
+      } catch (err) {
+        console.error(err);
+        console.error(\`Cannot load module \${key}\`);
+      }
+    };
+
+    React.useEffect(() => {
+      load();
+    }, []);
+
+    return Component ? <Component {...props} /> : loadingComponent;
+  }) as T[K];
+};
+`;
+
 const writeFile = (project_name) => {
   const PACKAGE_JSON_PATH = `${project_name}/package.json`;
   const WEBPACK_CONFIG_PATH = `${project_name}/webpack.config.js`;
@@ -160,6 +197,7 @@ const writeFile = (project_name) => {
   const APP_TSX_PATH = `${project_name}/src/module/main/component/Main.tsx`;
   const INDEX_APP_TS_PATH = `${project_name}/src/module/main/index.ts`;
   const INDEX_SCSS_PATH = `${project_name}/src/module/main/component/index.scss`;
+  const CODE_SPLIT_UTIL_PATH = `${project_name}/src/util/async.tsx`;
 
   const PACKAGE_JSON = `
 {
@@ -183,6 +221,7 @@ const writeFile = (project_name) => {
     APP_TSX_PATH,
     INDEX_APP_TS_PATH,
     INDEX_SCSS_PATH,
+    CODE_SPLIT_UTIL_PATH,
   ];
 
   const content = [
@@ -194,6 +233,7 @@ const writeFile = (project_name) => {
     APP_TSX,
     INDEX_APP_TS,
     INDEX_SCSS,
+    CODE_SPLIT_UTIL,
   ];
 
   if (!fs.existsSync(project_name)) {

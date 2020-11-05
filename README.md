@@ -44,6 +44,7 @@ File Structure will look like this
 |   |       |   +-- index.scss
 |   |       +-- index.ts
 |   +-- util
+|   |   +-- async.tsx
 |   +-- index.tsx
 |
 +-- static
@@ -84,6 +85,34 @@ when the installation complete, simply cd the project folder and
 yarn start
 ```
 
+## Code Splitting
+
+To keep your webapp optimized, we provided a dynamic import solution for code splitting.
+You can apply this feature in two ways.
+
+> This functionality is inspired by `React.lazy`. But we also support `Named Export` as well as `Default Export`.
+
+1. Route Component -> Split by Page
+2. Module / Component -> Split whenever calling another module or component
+
+```
+// Logo.tsx
+export const MyLogo = React.memo(() => <img src={mylogo}/>)
+
+// Module.tsx
+import { async } from 'util/async'
+
+const myLogo = async(() => import('component/logo'), 'MyLogo')
+
+export const Module = React.memo(() => {
+    return (
+        <main>
+            <myLogo />
+        </main>
+    )
+})
+```
+
 #Commands
 | Command | Description| Param Required |
 |--- |--- |--- |
@@ -97,7 +126,7 @@ yarn start
 - redux
 - ~~path alias~~ -> v1.2.23
 - ~~React.memo~~ -> v1.2.23
-- Code Splitting
+- ~~Code Splitting~~ -> v1.3.0
 - non-typescript
 - and more ...
 
