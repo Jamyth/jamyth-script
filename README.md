@@ -1,5 +1,6 @@
 # jamyth-script
 
+React CLI Tool
 A CLI tool for one-key setup [TypeScript](https://www.typescriptlang.org/), [React](https://reactjs.org/tutorial/tutorial.html), [Webpack](https://webpack.js.org/).
 
 Feature Includes:
